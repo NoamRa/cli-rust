@@ -1,3 +1,11 @@
+# Install Rust
+
+https://www.rust-lang.org/tools/install
+
+# Book's GitHub Repo
+
+https://github.com/kyclark/command-line-rust
+
 # Command-Line Rust exercises
 
 Following Command-Line Rust by Ken Youens-Clark
