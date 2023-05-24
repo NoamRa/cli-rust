@@ -26,17 +26,22 @@ pub fn get_args() -> MyResult<Config> {
                 .value_name("FILES")
                 .help("Input files")
                 .required(true)
-                .min_values(1),
+                .min_values(1)
+                .multiple(true)
+                .default_value("-"),
         )
         .arg(
-            Arg::with_name("number")
+            Arg::with_name("number_lines")
                 .short("n")
+                .long("number")
                 .help("Number all output lines")
-                .takes_value(false),
+                .takes_value(false)
+                .conflicts_with("number_nonblank_lines"),
         )
         .arg(
-            Arg::with_name("number-nonblank")
+            Arg::with_name("number_nonblank_lines")
                 .short("b")
+                .long("number-nonblank")
                 .help("number nonempty output lines, overrides -n")
                 .takes_value(false),
         )
@@ -44,7 +49,7 @@ pub fn get_args() -> MyResult<Config> {
 
     Ok(Config {
         files: matches.values_of_lossy("files").unwrap(),
-        number_lines: matches.is_present("number"),
-        number_nonblank_lines: matches.is_present("number-nonblank"),
+        number_lines: matches.is_present("number_lines"),
+        number_nonblank_lines: matches.is_present("number_nonblank_lines"),
     })
 }
