@@ -1,6 +1,5 @@
-use clap::{App, Arg, ArgMatches};
+use clap::{App, Arg};
 use std::error::Error;
-use std::io;
 
 type MyResult<T> = Result<T, Box<dyn Error>>;
 
@@ -71,7 +70,7 @@ pub fn get_args() -> MyResult<Config> {
 fn parse_positive_int(value: &str) -> MyResult<usize> {
     match value.parse::<usize>() {
         Ok(value) if value > 0 => Ok(value),
-        _ => Err(From::from(value)),
+        _ => Err(value.into()),
     }
 }
 
