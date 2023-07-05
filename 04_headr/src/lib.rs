@@ -44,6 +44,7 @@ pub fn get_args() -> MyResult<Config> {
                 .help("Print bytes of each of the specified files")
                 .short("c")
                 .long("bytes")
+                .conflicts_with("lines")
                 .takes_value(true)
         )
         .get_matches();
