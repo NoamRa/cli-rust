@@ -1,7 +1,7 @@
 use clap::{App, Arg};
 use std::error::Error;
 use std::fs::File;
-use std::io::{self, BufRead, BufReader};
+use std::io::{self, BufRead, BufReader, Read};
 
 type MyResult<T> = Result<T, Box<dyn Error>>;
 
@@ -13,11 +13,35 @@ pub struct Config {
 }
 
 pub fn run(config: Config) -> MyResult<()> {
-    println!("{:#?}", config);
-    for filename in config.files {
-        match open(&filename) {
+    // println!("{:#?}", config);
+    let number_of_files = config.files.len();
+    for (file_index, filename) in config.files.iter().enumerate() {
+        match open(filename) {
             Err(err) => eprintln!("{}: {}", filename, err),
-            Ok(_) => println!("Opened {}", filename),
+            Ok(mut file) => {
+                if file_index > 0 {
+                    println!()
+                }
+                if number_of_files > 1 {
+                    println!("==> {} <==", &filename);
+                }
+
+                if let Some(number_of_bytes) = config.bytes {
+                    let mut handle = file.take(number_of_bytes as u64);
+                    let mut buffer = vec![0; number_of_bytes];
+                    let bytes_read = handle.read(&mut buffer)?;
+                    print!("{}", String::from_utf8_lossy(&buffer[..bytes_read]));
+                } else {
+                    for _ in 0..config.lines {
+                        let mut line: String = String::new();
+                        let bytes = file.read_line(&mut line)?;
+                        if bytes == 0 {
+                            break;
+                        }
+                        print!("{}", line);
+                    }
+                }
+            }
         }
     }
     Ok(())
