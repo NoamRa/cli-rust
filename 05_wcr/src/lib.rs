@@ -106,7 +106,7 @@ pub fn run(config: Config) -> MyResult<()> {
     for filename in &config.files {
         match open(filename) {
             Err(err) => eprintln!("{}: {}", filename, err),
-            Ok(mut file) => {
+            Ok(file) => {
                 if let Ok(FileInfo {
                     lines,
                     words,
@@ -117,7 +117,7 @@ pub fn run(config: Config) -> MyResult<()> {
                     let filename_display = if filename == "-" {
                         "".to_string()
                     } else {
-                        format!("{}", &filename)
+                        (&filename).to_string()
                     };
                     println!(
                         "{}",
@@ -162,13 +162,17 @@ fn format_row(
     chars: String,
     suffix: String,
 ) -> String {
-    let formatted_suffix = if suffix.len() == 0 { suffix } else { format!(" {}", suffix) };
-    format!("{}{}{}{}{}", lines, words, bytes, chars, formatted_suffix)
+    let formatted_suffix = if suffix.len() == 0 {
+        suffix
+    } else {
+        format!(" {suffix}")
+    };
+    format!("{lines}{words}{bytes}{chars}{formatted_suffix}")
 }
 
 fn format_value(value: usize, show: bool) -> String {
     if show {
-        format!("{:>8}", value)
+        format!("{value:>8}")
     } else {
         "".to_string()
     }
